@@ -1,0 +1,16 @@
+{
+  "es3":       true,
+  "browser":   true,
+  "eqeqeq":    true,
+  "strict":    true,
+  "newcap":    false,
+  "undef":     true,
+  "unused":    true,
+  "onecase":   true,
+  "forin":     true,
+  "eqnull":    true,
+  "globals": {
+    "ActiveXObject": false,
+    "_iub": true
+  }
+}
