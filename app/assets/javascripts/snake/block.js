@@ -1,10 +1,11 @@
 // read this:
 // https://www.sitepoint.com/basic-animation-with-canvas-and-javascript/
 
+//= require ./namespace
 //= require ./lib/namespace
 //= require ./lib/utility
 
-(function(w, utils){
+(function(snake, utils){
   'use strict';
 
   // a block doesn't render it self.
@@ -26,23 +27,35 @@
 
     opts           = opts || {};
     this.value     = opts.value     || 1;
-    this.position  = opts.position  || [0,0]; // X,Y Axis. TO DO: Make some fixtures for position test
+    this.position  = opts.position  || [0,0]; // X,Y Axis.
+    this.dimension = opts.dimension || [0,0]; // dimension in x,y
     this.color     = setColor(this.value);
 
   };
 
-  Block.prototype.change = function(opts){
+  /**
+   * It changes all the block properties with the one passed
+   */
+  Block.prototype.change = function(props){
 
-    opts = opts || {};
+    props = props || {};
     var _this = this;
 
-    iterateObject(opts, function(key){ // reassign Block property
-        _this[key] = opts[key];
+    iterateObject(props, function(key){
+        _this[key] = props[key]; // reassign Block property
       }
     );
 
     this.color    = setColor(this.value);
 
+  };
+
+  /**
+   * It reduces the block Y position of a step
+   */
+  Block.prototype.reduceYPosition = function(reduceBy){
+    reduceBy = reduceBy || 1;
+    this.position[1] = this.position[1] - reduceBy;
   };
 
   function setColor (value){
@@ -56,6 +69,6 @@
 
   }
 
-  w.Block = Block;
+  snake.Block = Block;
 
-})(window, window.lib.utility);
+})(window.snake, window.snake.lib.utility);

@@ -5,25 +5,33 @@
   'use strict';
 
   describe('#Block', function() {
+    describe('#initialization', function() {
 
-    it('should contain a value', function() {
-      var block = new Block();
-      expect(block.value).toBeDefined();
-    });
+      it('should contain a value', function() {
+        var block = new Block();
+        expect(block.value).toBeDefined();
+      });
 
-    it('should have a position on table', function() {
-      var block = new Block();
-      expect(block.position).toBeDefined();
-    });
+      it('should have a position on table', function() {
+        var block = new Block();
+        expect(block.position).toBeDefined();
+      });
 
-    it('should have a color', function() {
-      var block = new Block();
-      expect(block.color).toBeDefined();
+      it('should have a color', function() {
+        var block = new Block();
+        expect(block.color).toBeDefined();
+      });
+
+      it('should have a dimension', function() {
+        var block = new Block();
+        expect(block.dimension).toBeDefined();
+      });
+
     });
 
     describe('#color', function() {
 
-      it('should be blank if value < 10', function() {
+      it('should be blank if value 1 <=> 10', function() {
         var block = new Block();
         expect(block.color).toBe('#ffffff');
       });
@@ -83,6 +91,21 @@
 
     });
 
+    describe('#reduceYPosition', function() {
+      it('should decrement by one the y position', function() {
+        var y = 10;
+        var block = new Block({ position: [0,y]});
+        block.reduceYPosition();
+        expect(block.position).toEqual([0, y - 1]);
+      });
+      it('should decrement by num passed with param', function() {
+        var y = 10;
+        var reduceBy = 8;
+        var block = new Block({ position: [0,y]});
+        block.reduceYPosition(reduceBy);
+        expect(block.position).toEqual([0, y - reduceBy]);
+      });
+    });
   });
 
-})(window.Block);
+})(window.snake.Block);

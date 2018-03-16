@@ -10,7 +10,7 @@
       it('should call the passed callback', function(){
         var obj = {test: 'test'};
         var dummy = jasmine.createSpy('dummy');
-        utility.iterateObject(null, obj, dummy);
+        utility.iterateObject( obj, dummy);
         expect(dummy).toHaveBeenCalled();
       });
 
@@ -20,11 +20,11 @@
         var callback = function(){
           return testValue;
         };
-        var returnValue = utility.iterateObject(null, obj, callback);
+        var returnValue = utility.iterateObject( obj, callback);
         expect(returnValue).toBe(testValue);
       });
 
     });
   });
 
-})(window.lib.utility);
+})(window.snake.lib.utility);

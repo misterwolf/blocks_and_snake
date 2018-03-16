@@ -1,1 +1,1 @@
-window.lib = {};
+window.snake.lib = window.snake.lib || {};

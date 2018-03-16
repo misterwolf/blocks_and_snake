@@ -21,4 +21,4 @@
 
   };
 
-})(window.lib.utility = {});
+})(window.snake.lib.utility = {});
