@@ -81,17 +81,6 @@
         expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice);
       });
 
-      it('should fill the list with empty tableSlices', function(){
-        var table = new Table();
-        table.fillTableSlicesList();
-        var nrOfElements = table.tableSlicesList.length;
-
-        while (nrOfElements) {
-          expect(table.tableSlicesList[nrOfElements - 1].empty).toBe(true);
-          nrOfElements--;
-        }
-      });
-
     });
 
     describe('#removeFirstTableSlice', function(){

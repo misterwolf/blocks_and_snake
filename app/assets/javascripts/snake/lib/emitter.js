@@ -56,7 +56,6 @@
     };
 
     object.on = function(evt, cb){
-      console.log('hello!')
       addListener(evt, cb);
       return object;
     };

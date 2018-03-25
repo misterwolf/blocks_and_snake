@@ -1,59 +1,63 @@
 //= require ./namespace
 //= require ./block
 
-(function(snake, utils){
+(function(snake, lib){
 
   'use strict';
 
-  var iterateObject = utils.iterateObject;
-  var Block = snake.Block;
+  var BLOCK_WIDTH   = 100;
+  var HEIGHT_BORDER = 1000;
+
+  var iterateObject = lib.utility.iterateObject;
+  var Emitter       = lib.Emitter;
+
+  /**
+   * An horizontal line with height and width (same as Table) containing a list of block
+   *
+   * @param {Object} object={} Object containing all the opts
+   *    positionY  : position Y of the slice.
+   *    width      : slice width
+   *    height     : slice height
+   *    blockWidth : the width of a Block
+   *    nullPosition : it defined a null element in specific position
+   * @returns null
+   * @function
+   * @memberof snake
+   */
   var TableSlice = function(opts){
 
-    opts                = opts                 || {};
+    opts              = opts            || {};
 
-    this.positionX      = opts.positionX       || [];  // nt column on the table.
-    this.sliceHeight    = opts.sliceHeight     || 100;
-    this.width          = opts.width           || 30;  // width  of the x axis
-    this.blocksList     = opts.blocksList      || fillList(4);
+    this.positionY    = opts.positionY  || 0;
+    this.hardLevel    = opts.hardLevel  || 1;
+    this.height       = opts.height     || 100;
+    this.width        = opts.width      || 600;
+    this.blockWidth   = opts.blockWidth || BLOCK_WIDTH; // width of a Single Block
+    this.heightBorder = opts.heightBorder || HEIGHT_BORDER;
+
+    this.blocksList   = this.fillBlockList(opts.nullPosition);
+
+    Emitter.make(this);
+
+    this.on('move-slice', function(){
+        this.incrementPositionY(this.incrementBlocksYPosition);
+      }
+    );
   };
 
   /**
-   * add a new block in the last position
+   * it reduces the positionY by one and
+   * emit 'table-slice-end' event if positionY == 0
    */
-  TableSlice.prototype.addBlockInLastPosition = function(){
-    var lastPosition = this.blocksList.length - 1;
-    this.blocksList[lastPosition] = new snake.Block();
-  };
+  TableSlice.prototype.incrementPositionY = function(cb){
+    this.positionY++;
 
-  /**
-   * FIFO: it removes the first element and then add a new one.
-   */
-  TableSlice.prototype.restoreElementsInList = function(){
-    this.blocksList.shift();
-    this.blocksList.push(null);
-  };
-
-  /**
-   * it reset the blocks queue with a new one
-   * @param {Array} blocksList: array of blocks
-   */
-  TableSlice.prototype.resetBlocksList = function(blocksList){
-    this.blocksList = blocksList || fillList(this.blocksList.length);
-  };
-
-  /**
-   * It move down all the blocks in list and then restore queue again.
-   * @param {Function} cb: generic call back called after down all finished
-   */
-  TableSlice.prototype.completeCicle = function(cb){
-    var blockHeight = this.sliceHeight;
-    while (blockHeight--){
-      this.moveBlocksDown();
-    }
-    this.restoreElementsInList();
-
-    if (cb){
-      cb();
+    if (this.positionY >= this.heightBorder) {
+      this.emit('table-slice-end', this);
+    } else {
+      if (cb){
+        cb();
+      }
     }
 
   };
@@ -61,24 +65,36 @@
   /**
    * it iterates all the blocks down of a step
    */
-  TableSlice.prototype.moveBlocksDown = function(){
-
+  TableSlice.prototype.incrementBlocksYPosition = function(){
+    var _this = this;
     var blocksList = this.blocksList;
-    iterateObject(blocksList, function(key){
-        blocksList[key].reducePosition(); // recalculate each Block.positionY;
-      }
-    );
 
+    iterateObject(blocksList, function(key){
+      blocksList[key].incrementYPosition(_this.positionY); // reset each Block.positionY;
+    });
   };
 
-  function fillList(maxNum){
-    var blockList = [];
-    while (maxNum--){
-      blockList[maxNum] = null;
+  TableSlice.prototype.fillBlockList = function (nullPosition) {
+
+    var blockList    = [];
+    var maxNum       = this.width / this.blockWidth;
+
+    while (maxNum--) {
+
+      var block = new snake.Block({
+        hardLevel : this.hardLevel,
+        positionX : (this.blockWidth * maxNum),
+        positionY : this.positionY
+      });
+
+      blockList[maxNum] = block;
     }
+
+    delete blockList[nullPosition];
+
     return blockList;
-  }
+  };
 
   snake.TableSlice = TableSlice;
 
-})(window.snake, window.snake.lib.utility);
+})(window.snake, window.snake.lib);

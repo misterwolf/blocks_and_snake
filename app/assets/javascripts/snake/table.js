@@ -9,17 +9,29 @@
   'use strict';
 
   var WIDTH             = 600;
-  var HEIGTH            = 1000;
-  var HEIGTH_FOR_SLICE  = 100;
+  var HEIGHT            = 1000;
+  var HEIGHT_FOR_SLICE  = 100;
 
   var Emitter           = lib.Emitter;
 
+  /**
+   * The 'screen' containing all the visible elements
+   *
+   * @param {Object}    object={}  Object containing all the opts
+   *    hardLevel      : position Y of the slice.
+   *    width          : slice width
+   *    height         : slice height
+   *    heightForSlice : the width of a Block
+   * @returns null
+   * @function
+   * @memberof snake
+   */
   var Table = function(opts){
 
     opts                  = opts                 || {};
 
-    this.height           = opts.height          || HEIGTH;
-    this.heightForSlice   = opts.heightForSlice  || HEIGTH_FOR_SLICE;
+    this.height           = opts.height          || HEIGHT;
+    this.heightForSlice   = opts.heightForSlice  || HEIGHT_FOR_SLICE;
     this.width            = opts.width           || WIDTH;
     this.hardLevel        = opts.hardLevel       || 1;
     this.tableSlicesList  = opts.tableSlicesList || [];
@@ -40,6 +52,7 @@
     this.fillTableSlicesList();
 
   };
+
   /**
    * it fill the list with empty TableSlice having Height/HeightForSlic element
    */
@@ -47,10 +60,11 @@
     var totElement = this.height / this.heightForSlice;
     while (totElement--) {
       var tableSlice = new snake.TableSlice({
-        hardLevel : 0,
-        empty     : true,
-        width     : this.width,
-        height    : this.heightForSlice});
+        hardLevel    : 0,
+        empty        : true,
+        width        : this.width,
+        heightBorder : this.height,
+        height       : this.heightForSlice});
       this.tableSlicesList.push(tableSlice);
     }
   };
@@ -75,9 +89,10 @@
    */
   Table.prototype.addATableSlice = function(){
     var tableSlice = new snake.TableSlice({
-        hardLevel : this.hardLevel,
-        width     : this.width,
-        height    : this.heightForSlice});
+        hardLevel    : this.hardLevel,
+        width        : this.width,
+        heightBorder : this.height,
+        height       : this.heightForSlice});
 
     this.tableSlicesList.push(tableSlice);
 

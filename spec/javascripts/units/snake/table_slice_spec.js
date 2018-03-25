@@ -1,100 +1,132 @@
-/* global jasmine, describe, beforeEach, it, expect, spyOn */
+/* global describe, beforeEach, it, expect, spyOn */
 
 (function(snake) {
 
   'use strict';
 
+
   var TableSlice = snake.TableSlice;
 
-  snake.Block = function(){
-    this.reducePosition = function(){
+  snake.Block = function(opts){
+
+    this.positionY = opts.positionY || 0;
+    this.positionX = opts.positionX || 0;
+
+    this.incrementYPosition = function(y){
+      this.positionY = y;
     };
   };
 
-  TableSlice.Block = function(){};
-
   describe('#TableSlice', function() {
+
     describe('#initialization', function() {
 
-      var blocksList     = null;
       var tableSlice     = null;
 
       beforeEach(function() {
-        blocksList     = [1,2,3,4];
-        tableSlice     = new TableSlice({blocksList: blocksList });
+        tableSlice     = new TableSlice();
       });
 
-      it('should have a position', function(){
-        expect(tableSlice.positionX).toBeDefined();
+      it('should have a Y position', function(){
+        expect(tableSlice.positionY).toBeDefined();
       });
 
-      it('should have a sliceHeight', function(){
-        expect(tableSlice.sliceHeight).toBeDefined();
+      it('should have a height', function(){
+        expect(tableSlice.height).toBeDefined();
       });
 
       it('should have a width', function(){
         expect(tableSlice.width).toBeDefined();
       });
 
-      it('should have a list of block based of max num', function(){
-        expect(tableSlice.blocksList.length).toBe(blocksList.length);
+      it('should have a blockWidth', function(){
+        expect(tableSlice.blockWidth).toBeDefined();
+      });
+
+      it('should have a hardLevel', function(){
+        expect(tableSlice.hardLevel).toBeDefined();
+      });
+
+      it('should have a list of block', function(){
+        expect(tableSlice.blocksList).toBeDefined();
       });
 
     });
 
-    describe('#addBlockInLastPosition', function() {
-      it('should add a block in the last position', function(){
-        var tableSlice = new TableSlice();
-        tableSlice.addBlockInLastPosition();
-        var lastElement = tableSlice.blocksList.length - 1;
-        expect(tableSlice.blocksList[lastElement]).toBeDefined();
+    describe('#incrementPositionY', function() {
+      it('should increment a positionY with by one', function(){
+        var positionY  = 10;
+        var tableSlice = new TableSlice({positionY: positionY});
+        tableSlice.incrementPositionY();
+        expect(tableSlice.positionY).toBe(positionY + 1);
+      });
+      it('should fire event table-slice-end if positionY >= heightBorder', function(){
+        var positionY  = 1;
+        var tableSlice = new TableSlice({positionY: positionY, heightBorder: 2});
+        spyOn(tableSlice, 'emit');
+        tableSlice.incrementPositionY();
+        expect(tableSlice.emit).toHaveBeenCalledWith('table-slice-end', tableSlice);
       });
     });
 
-    describe('#restoreElementsInList', function() {
-      it('should remove the first element and put an empty at last index', function(){
-        var blocksList = [1,2,3,4];
-        var tableSlice = new TableSlice({blocksList: blocksList});
-        tableSlice.restoreElementsInList();
-        expect(tableSlice.blocksList).toEqual([2,3,4,null]);
+    describe('#fillBlockList', function() {
+      describe('#basicSetting', function(){
+        var tableSlice     = null;
+        beforeEach(function() {
+          tableSlice     = new TableSlice();
+        });
+
+        it('should set a list of block based of max num', function(){
+          expect(tableSlice.blocksList.length).toBe( tableSlice.width / tableSlice.blockWidth );
+        });
+
+        it('should set a list of block with the same positionY', function(){
+          var blocksNumber = tableSlice.blocksList.length;
+          while (blocksNumber) {
+            expect( tableSlice.blocksList[blocksNumber - 1].positionY).toEqual(tableSlice.positionY);
+            blocksNumber--;
+          }
+        });
+
+        it('should set a list of block with the positionX increased', function(){
+          var blocksNumber = tableSlice.blocksList.length;
+          while (blocksNumber) {
+            var blockWidth = tableSlice.blockWidth;
+            expect( tableSlice.blocksList[blocksNumber - 1].positionX).toBe( (blockWidth * blocksNumber) - blockWidth);
+            blocksNumber--;
+          }
+        });
       });
+
+      describe('#advancedSetting', function(){
+        it('should set a list of block with one empty element on nullPosition', function(){
+          var nullPosition = 1;
+          var tableSlice = new TableSlice({nullPosition: nullPosition});
+          expect( tableSlice.blocksList[nullPosition] ).toBe(undefined);
+        });
+      });
+
     });
 
-    describe('#resetBlocksList', function() {
+    describe('#incrementBlocksYPosition', function() {
 
-      var blocksList = null;
-      var tableSlice = null;
+      it('should call proper method for all blocks passing the current positionY ', function(){
+        var tableSlice   = new TableSlice();
 
-      beforeEach(function() {
-        blocksList = [1,2,3,4];
-        tableSlice = new TableSlice({blocksList: blocksList});
-      });
+        var blocksNumber = tableSlice.blocksList.length;
 
-      it('should reset blocks list with the original length', function(){
-        tableSlice.resetBlocksList();
-        expect(tableSlice.blocksList.length).toEqual(blocksList.length);
-      });
+        while (blocksNumber) {
+          spyOn(tableSlice.blocksList[blocksNumber - 1], 'incrementYPosition');
+          blocksNumber--;
+        }
 
-      it('should redefine blocksList with the one passed as parameter', function(){
-        blocksList.push(5);
-        tableSlice.resetBlocksList(blocksList);
-        expect(tableSlice.blocksList).toEqual(blocksList);
-      });
+        tableSlice.incrementBlocksYPosition();
 
-    });
-
-    describe('#moveBlocksDown', function() {
-
-      it('should call proper method for all blocks ', function(){
-        var anotherBlock = new snake.Block();
-        var tableSlice   = new TableSlice({blocksList: [anotherBlock]});
-
-        spyOn(anotherBlock, 'reducePosition');
-
-        tableSlice.moveBlocksDown();
-
-        expect(anotherBlock.reducePosition).toHaveBeenCalled();
-
+        blocksNumber = tableSlice.blocksList.length;
+        while (blocksNumber) {
+          expect( tableSlice.blocksList[blocksNumber - 1].incrementYPosition).toHaveBeenCalledWith(tableSlice.positionY);
+          blocksNumber--;
+        }
       });
 
     });
