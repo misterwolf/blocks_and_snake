@@ -6,7 +6,7 @@
   'use strict';
 
   var iterateObject = utils.iterateObject;
-
+  var Block = snake.Block;
   var TableSlice = function(opts){
 
     opts                = opts                 || {};
@@ -28,9 +28,9 @@
   /**
    * FIFO: it removes the first element and then add a new one.
    */
-  TableSlice.prototype.restoreElementsInList = function(){ // remove the first element
+  TableSlice.prototype.restoreElementsInList = function(){
     this.blocksList.shift();
-    this.blocksList.push(null); // restore number of element
+    this.blocksList.push(null);
   };
 
   /**
