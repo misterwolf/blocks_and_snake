@@ -52,7 +52,7 @@
     });
 
     describe('#restoreElementsInList', function() {
-      it('should remove the first element and put an empty at last index without param', function(){
+      it('should remove the first element and put an empty at last index', function(){
         var blocksList = [1,2,3,4];
         var tableSlice = new TableSlice({blocksList: blocksList});
         tableSlice.restoreElementsInList();
@@ -76,8 +76,6 @@
       });
 
       it('should redefine blocksList with the one passed as parameter', function(){
-        var blocksList = [1,2,3,4];
-        var tableSlice = new TableSlice({blocksList: blocksList});
         blocksList.push(5);
         tableSlice.resetBlocksList(blocksList);
         expect(tableSlice.blocksList).toEqual(blocksList);
@@ -96,26 +94,6 @@
         tableSlice.moveBlocksDown();
 
         expect(anotherBlock.reducePosition).toHaveBeenCalled();
-
-      });
-
-    });
-
-    describe('#completeCicle', function() {
-
-      it('should move down for sliceHeight times and restore the list', function(){
-        var sliceHeight = 100;
-        var tableSlice   = new TableSlice( {sliceHeight: sliceHeight} );
-        window.cb = function(){};
-        spyOn(tableSlice, 'restoreElementsInList');
-        spyOn(tableSlice, 'moveBlocksDown');
-        spyOn(window, 'cb');
-
-        tableSlice.completeCicle(window.cb);
-
-        expect(tableSlice.moveBlocksDown.calls.count()).toEqual(sliceHeight);
-        expect(tableSlice.restoreElementsInList).toHaveBeenCalled();
-        expect(window.cb).toHaveBeenCalled();
 
       });
 
