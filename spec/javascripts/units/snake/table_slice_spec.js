@@ -4,7 +4,6 @@
 
   'use strict';
 
-
   var TableSlice = snake.TableSlice;
 
   snake.Block = function(opts){
@@ -12,7 +11,7 @@
     this.positionY = opts.positionY || 0;
     this.positionX = opts.positionX || 0;
 
-    this.incrementYPosition = function(y){
+    this.setPositionY = function(y){
       this.positionY = y;
     };
   };
@@ -116,7 +115,7 @@
         var blocksNumber = tableSlice.blocksList.length;
 
         while (blocksNumber) {
-          spyOn(tableSlice.blocksList[blocksNumber - 1], 'incrementYPosition');
+          spyOn(tableSlice.blocksList[blocksNumber - 1], 'setPositionY');
           blocksNumber--;
         }
 
@@ -124,7 +123,7 @@
 
         blocksNumber = tableSlice.blocksList.length;
         while (blocksNumber) {
-          expect( tableSlice.blocksList[blocksNumber - 1].incrementYPosition).toHaveBeenCalledWith(tableSlice.positionY);
+          expect( tableSlice.blocksList[blocksNumber - 1].setPositionY).toHaveBeenCalledWith(tableSlice.positionY);
           blocksNumber--;
         }
       });

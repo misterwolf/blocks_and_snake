@@ -1,4 +1,4 @@
-/* global describe, it, expect */
+/* global describe, it, expect, beforeEach */
 
 (function(Block) {
 
@@ -6,104 +6,119 @@
 
   describe('#Block', function() {
     describe('#initialization', function() {
-
+      var block = null;
+      beforeEach(function(){
+        block = new Block();
+      });
       it('should contain a value', function() {
-        var block = new Block();
         expect(block.value).toBeDefined();
       });
 
-      it('should have a position on table', function() {
-        var block = new Block();
-        expect(block.position).toBeDefined();
+      it('should have a positionY', function() {
+        expect(block.positionY).toBeDefined();
       });
 
-      it('should have a color', function() {
-        var block = new Block();
-        expect(block.color).toBeDefined();
+      it('should have a hardLevel', function() {
+        expect(block.hardLevel).toBeDefined();
+      });
+
+      it('should have a positionX', function() {
+        expect(block.positionY).toBeDefined();
+      });
+
+      it('should have a bgColor', function() {
+        expect(block.bgColor).toBeDefined();
+      });
+
+      it('should have a valueColor', function() {
+        expect(block.valueColor).toBeDefined();
       });
 
       it('should have a dimension', function() {
-        var block = new Block();
         expect(block.dimension).toBeDefined();
       });
 
     });
 
-    describe('#color', function() {
+    describe('#bgColor', function() {
 
       it('should be blank if value 1 <=> 10', function() {
         var block = new Block();
-        expect(block.color).toBe('#ffffff');
+        expect(block.bgColor).toBe('#ffffff');
       });
 
       it('should be light blue if value > 10 and < 20 ', function() {
         var block = new Block({value: 11});
-        expect(block.color).toBe('#00FFFF');
+        expect(block.bgColor).toBe('#00FFFF');
       });
 
       it('should be dark cyan if value > 30 and < 40 ', function() {
         var block = new Block({value: 31});
-        expect(block.color).toBe('#008B8B');
+        expect(block.bgColor).toBe('#008B8B');
       });
 
       it('should be orange if value > 40 and < 50 ', function() {
         var block = new Block({value: 41});
-        expect(block.color).toBe('#FF8C00');
+        expect(block.bgColor).toBe('#FF8C00');
       });
 
       it('should be red if value > 50', function() {
         var block = new Block({value: 51});
-        expect(block.color).toBe('#FF0000');
+        expect(block.bgColor).toBe('#FF0000');
       });
 
     });
 
     describe('#change', function() {
+      var block = null;
+      beforeEach(function(){
+        block = new Block();
+      });
+
       it('should change the value', function() {
         var nextValue = 3;
-        var block = new Block();
         block.change({value:nextValue});
         expect(block.value).toBe(nextValue);
       });
 
       it('should change the position', function() {
         var newPosition = [2,2];
-        var block = new Block();
         block.change({position: newPosition});
         expect(block.position).toEqual(newPosition);
       });
 
-      it('should change the color', function() {
+      it('should change the bgColor if value changes', function() {
         var newValue = 41;
-        var block = new Block();
-        var oldColor = block.color;
+        var oldColor = block.bgColor;
         block.change({value: newValue});
-        expect(block.color).not.toEqual(oldColor);
+        expect(block.bgColor).not.toEqual(oldColor);
       });
 
       it('shouldn\'t change the color if value doesn\'t change', function() {
-        var newPosition = [2,2];
-        var block = new Block();
-        var tmpColor = block.color;
-        block.change({position: newPosition});
-        expect(block.color).toEqual(tmpColor);
+        var positionY = 10000;
+        var tmpColor = block.bgColor;
+        block.change({positionY: positionY});
+        expect(block.bgColor).toEqual(tmpColor);
       });
 
     });
 
-    describe('#reduceYPosition', function() {
-      it('should decrement by one the y position', function() {
+    describe('#setPositionY', function() {
+      it('should increment by num passed with param', function() {
         var y = 10;
-        var block = new Block({ position: [0,y]});
-        block.reduceYPosition();
-        expect(block.position).toEqual([0, y - 1]);
+        var newY = 11;
+        var block = new Block({ positionY: y});
+        block.setPositionY(newY);
+        expect(block.positionY).toEqual(newY);
       });
-      it('should decrement by num passed with param', function() {
+    });
+
+    describe('#incrementYPosition', function() {
+      it('should increment by one the y position', function() {
         var y = 10;
-        var reduceBy = 8;
-        var block = new Block({ position: [0,y]});
-        block.reduceYPosition(reduceBy);
-        expect(block.position).toEqual([0, y - reduceBy]);
+        var block = new Block({ positionY: y});
+        block.incrementYPosition();
+        expect(block.positionY).toEqual(y + 1);
       });
     });
   });

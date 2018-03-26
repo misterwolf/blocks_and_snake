@@ -55,9 +55,8 @@
     if (this.positionY >= this.heightBorder) {
       this.emit('table-slice-end', this);
     } else {
-      if (cb){
-        cb();
-      }
+      cb = cb || function(){};
+      cb();
     }
 
   };
@@ -70,7 +69,7 @@
     var blocksList = this.blocksList;
 
     iterateObject(blocksList, function(key){
-      blocksList[key].incrementYPosition(_this.positionY); // reset each Block.positionY;
+      blocksList[key].setPositionY(_this.positionY); // reset each Block.positionY;
     });
   };
 
@@ -83,6 +82,7 @@
 
       var block = new snake.Block({
         hardLevel : this.hardLevel,
+        dimension : [BLOCK_WIDTH, this.height],
         positionX : (this.blockWidth * maxNum),
         positionY : this.positionY
       });

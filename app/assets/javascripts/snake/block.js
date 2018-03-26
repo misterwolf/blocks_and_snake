@@ -4,17 +4,20 @@
 //= require ./namespace
 //= require ./lib/namespace
 //= require ./lib/utility
+//= require ./lib/emitter
 
-(function(snake, utils){
+(function(snake, lib){
   'use strict';
 
   // a block doesn't render it self.
   // the render mmethod must belong to another entities, where it renders all the existing block.
   // the sense is, a block doesn't know that it will be render on somewhere.
   // does it make sense?
-  var iterateObject = utils.iterateObject;
 
-  var COLORS = {
+  var iterateObject = lib.utility.iterateObject,
+      Emitter       = lib.Emitter;
+
+  var BG_COLORS = {
     1 : 'ffffff',
     11: '00FFFF',
     21: 'FF8C00',
@@ -25,16 +28,21 @@
 
   var Block = function(opts){
 
-    opts           = opts || {};
-    this.value     = opts.value     || 1;
-    this.position  = opts.position  || [0,0]; // X,Y Axis.
-    this.dimension = opts.dimension || [0,0]; // dimension in x,y
-    this.color     = setColor(this.value);
+    opts            = opts            || {};
+    this.hardLevel  = opts.hardLevel  || 1;
+    this.value      = opts.value      || 1;
+    this.positionY  = opts.positionY  || 0; // Y Axis.
+    this.positionX  = opts.positionX  || 0; // X Axis.
+    this.dimension  = opts.dimension  || [0,0]; // dimension in x,y
+    this.bgColor    = setBgColor(this.value);
+    this.valueColor = '#000000';
+
+    Emitter.make(this);
 
   };
 
   /**
-   * It changes all the block properties with the one passed
+   * It changes all the block properties with the ones passed
    */
   Block.prototype.change = function(props){
 
@@ -46,23 +54,30 @@
       }
     );
 
-    this.color    = setColor(this.value);
+    this.bgColor    = setBgColor(this.value);
 
   };
 
   /**
-   * It reduces the block Y position of a step
+   * It changes the Y position with new passed value
    */
-  Block.prototype.reduceYPosition = function(reduceBy){
-    reduceBy = reduceBy || 1;
-    this.position[1] = this.position[1] - reduceBy;
+  Block.prototype.setPositionY = function(y){
+    y = y || 0;
+    this.positionY = y;
   };
 
-  function setColor (value){
+  /**
+   * It increments the block Y position of a step
+   */
+  Block.prototype.incrementYPosition = function(){
+    this.positionY++;
+  };
 
-    return iterateObject(COLORS, function(key){
+  function setBgColor (value){
+
+    return iterateObject(BG_COLORS, function(key){
         if ( value <= key ) {
-          return '#' + COLORS[key];
+          return '#' + BG_COLORS[key];
         }
       }
     );
@@ -71,4 +86,4 @@
 
   snake.Block = Block;
 
-})(window.snake, window.snake.lib.utility);
+})(window.snake, window.snake.lib);
