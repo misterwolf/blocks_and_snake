@@ -5,6 +5,7 @@
   'use strict';
 
   var Table   = blocks_and_snake.Table;
+
   blocks_and_snake.TableSlice = function(opts){
 
     opts = opts || {};
