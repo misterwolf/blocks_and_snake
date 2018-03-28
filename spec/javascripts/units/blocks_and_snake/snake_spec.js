@@ -1,105 +1,104 @@
-/* global describe, it, expect, spyOn, beforeEach */
+/* global describe, it, expect, beforeEach, spyOn */
 
 (function(blocks_and_snake) {
 
   'use strict';
 
-  var Table   = blocks_and_snake.Table;
+  var Snake = blocks_and_snake.Snake;
 
-  blocks_and_snake.TableSlice = function(opts){
-
-    opts = opts || {};
-    this.empty     = opts.empty     || false;
-    this.hardLevel = opts.hardLevel || 0;
-
-    this.moveBlocksDown = function(){
-    };
-    this.stopBlocks = function(){
-    };
-
-  };
-  describe('#Table', function() {
+  describe('#Snake', function() {
 
     describe('#initialization', function(){
+      var snake = null;
 
-      it('should have a height', function(){
-        var height = 500;
-        var table = new Table({height: height});
-        expect(table.height).toBe(height);
+      beforeEach(function(){
+        snake = new Snake();
       });
 
-      it('should have a width', function(){
-        var width = 10;
-        var table = new Table({width: width});
-        expect(table.width).toBe(width);
+      it('should have a value', function(){
+        expect(snake.value).toBeDefined();
       });
 
-      it('should have a heightForSlice', function(){
-        var heightForSlice = 500;
-        var table = new Table({heightForSlice: heightForSlice});
-        expect(table.heightForSlice).toBe(heightForSlice);
+      it('should have a position on horizontal line', function(){
+        expect(snake.positionX).toBeDefined();
       });
 
-      it('should have a difficulty level', function(){
-        var table = new Table();
-        expect(table.hardLevel).toBeDefined();
+      it('should have a position on vertical line', function(){
+        expect(snake.positionY).toBeDefined();
       });
 
-      it('should fill the tableSliceList having size in relation with heights', function(){
-        var table = new Table();
-        expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice);
+      it('should have a bgColor', function(){
+        expect(snake.bgColor).toBeDefined();
       });
 
-      it('should fill the tableSliceList with fake elements', function(){
-        var table = new Table();
-        var sliceNumber = table.tableSlicesList.length;
-        while (sliceNumber) {
-          expect( table.tableSlicesList[sliceNumber - 1]).toBe(null);
-          sliceNumber--;
-        }
+      it('should have a lower limit x', function(){
+        expect(snake.lowerXLimit).toBeDefined();
+      });
+      it('should have a greater limit x', function(){
+        expect(snake.greaterXLimit).toBeDefined();
       });
 
     });
 
-    describe('#changeHardLevel', function(){
-      it('should change the difficulty level', function(){
-        var newHardLevel = 10;
-        var table = new Table({hardLevel: 1});
-        table.changeHardLevel(newHardLevel);
-        expect(table.hardLevel).toBe(newHardLevel);
-      });
-    });
+    describe('#incrementValue', function(){
 
-    describe('#addATableSlice', function(){
-      it('should add a TableSlice', function(){
-        var table = new Table();
-        var currentLenght = table.tableSlicesList.length;
-        table.addATableSlice();
-        expect(table.tableSlicesList.length).toBe(currentLenght + 1);
-      });
-
-      it('should add a null element if parameter == true', function(){
-        var table = new Table();
-        var currentLenght = table.tableSlicesList.length;
-        table.addATableSlice(false);
-        expect(table.tableSlicesList[currentLenght]).toBe(null);
+      it('should incrementValue by one', function(){
+        var snake = new Snake();
+        var oldValue = snake.value;
+        snake.incrementValue();
+        expect(snake.value).toBe(oldValue + 1);
       });
 
     });
 
-    describe('#removeFirstTableSlice', function(){
+    describe('#decrementValue', function(){
+      it('should decrementValue by one', function(){
+        var snake = new Snake({positionX: 1, lowerXLimit: 1});
+        var oldValue = snake.value;
+        snake.decrementValue();
+        expect(snake.value).toBe(oldValue - 1);
+      });
+      it('should emit the snake-null event', function(){
+        var justOne = 1;
+        var snake = new Snake({value: justOne});
+        spyOn(snake, 'emit');
+        snake.decrementValue();
+        expect(snake.emit).toHaveBeenCalledWith('snake-null');
+      });
+    });
 
-      it('should remove the first element in TableSlice', function(){
-        var anotherSlice = new blocks_and_snake.TableSlice();
-        var anotherSlice2 = new blocks_and_snake.TableSlice();
+    describe('#moveToTheLeft', function(){
 
-        var table   = new Table({tableSlicesList: [ anotherSlice, anotherSlice2 ]});
-        var currentLenght = table.tableSlicesList.length;
+      it('should reduce the positionX by one', function(){
+        var snake = new Snake({positionX: 2});
+        var oldPositionX = snake.positionX;
+        snake.moveToTheLeft();
+        expect(snake.positionX).toBe(oldPositionX - 1);
+      });
 
-        table.removeFirstTableSlice();
+      it('should not exceed the left limit', function(){
+        var snake = new Snake({positionX: 1, lowerXLimit: 1});
+        var oldPositionX = snake.positionX;
+        snake.moveToTheLeft();
+        expect(snake.positionX).not.toBeLessThan(oldPositionX);
+      });
 
-        expect(table.tableSlicesList.length).toBe( currentLenght - 1 );
-        expect(table.tableSlicesList[0]).toBe(anotherSlice2);
+    });
+
+    describe('#moveToTheRight', function(){
+
+      it('should increment the positionX by one', function(){
+        var snake = new Snake();
+        var oldPositionX = snake.positionX;
+        snake.moveToTheRight();
+        expect(snake.positionX).toBe(oldPositionX + 1);
+      });
+
+      it('should not exceed the right limit', function(){
+        var snake = new Snake({positionX: 1, greaterXLimit: 1});
+        var oldPositionX = snake.positionX;
+        snake.moveToTheRight();
+        expect(snake.positionX).not.toBeGreaterThan(oldPositionX);
       });
 
     });
