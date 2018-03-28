@@ -4,7 +4,7 @@
 //= require ./lib/namespace
 //= require ./lib/utility
 
-(function(snake, TableSlice, lib){
+(function(blocks_and_snake, TableSlice, lib){
 
   'use strict';
 
@@ -75,7 +75,7 @@
     var tableSlice = null;
 
     if (emptyElement) {
-      tableSlice = new snake.TableSlice({
+      tableSlice = new blocks_and_snake.TableSlice({
           nullPosition : false,
           hardLevel    : this.hardLevel,
           width        : this.width,
@@ -109,6 +109,6 @@
     this.emit('move-slice', cb || function(){});
   };
 
-  snake.Table = Table;
+  blocks_and_snake.Table = Table;
 
-})(window.snake, window.snake.TableSlice, window.snake.lib);
+})(window._blocks_and_snake, window._blocks_and_snake.TableSlice, window._blocks_and_snake.lib);

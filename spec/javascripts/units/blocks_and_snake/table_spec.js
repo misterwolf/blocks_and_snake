@@ -105,4 +105,4 @@
 
   });
 
-})(window.snake);
+})(window._blocks_and_snake);

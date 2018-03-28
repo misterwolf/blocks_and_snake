@@ -1,7 +1,7 @@
 //= require ./namespace
 //= require ./block
 
-(function(snake, lib){
+(function(blocks_and_snake, lib){
 
   'use strict';
 
@@ -80,7 +80,7 @@
 
     while (maxNum--) {
 
-      var block = new snake.Block({
+      var block = new blocks_and_snake.Block({
         hardLevel : this.hardLevel,
         dimension : [BLOCK_WIDTH, this.height],
         positionX : (this.blockWidth * maxNum),
@@ -95,6 +95,6 @@
     return blockList;
   };
 
-  snake.TableSlice = TableSlice;
+  blocks_and_snake.TableSlice = TableSlice;
 
-})(window.snake, window.snake.lib);
+})(window._blocks_and_snake, window._blocks_and_snake.lib);
