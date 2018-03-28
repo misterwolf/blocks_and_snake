@@ -38,42 +38,26 @@
 
     Emitter.make(this);
 
-  };
-
-  /**
-   * it starts the table
-   */
-  Table.prototype.start = function(){
-
-    // Observers
-    this.initObservers();
-
     // fill tableSlicesList
     this.fillTableSlicesList();
 
+    // Observers
+    this.on('table-slice-end', this.restoreTableSlicesList);
+    this.on('go-on',           this.moveSlices);
   };
 
   /**
-   * it fill the list with empty TableSlice having Height/HeightForSlic element
+   * it fill the list with empty TableSlice having Height/HeightForSlice element
    */
   Table.prototype.fillTableSlicesList = function(){
     var totElement = this.height / this.heightForSlice;
-    while (totElement--) {
-      var tableSlice = new snake.TableSlice({
-        hardLevel    : 0,
-        empty        : true,
-        width        : this.width,
-        heightBorder : this.height,
-        height       : this.heightForSlice});
-      this.tableSlicesList.push(tableSlice);
-    }
-  };
 
-  /**
-   * it add a TableSlice in the proper list.
-   */
-  Table.prototype.initObservers = function(){
-    this.on('table-slice-end', this.restoreTableSlicesList);
+    while (totElement-- ) {
+      if (typeof this.tableSlicesList[totElement] === 'undefined') {
+        this.tableSlicesList[totElement] = null;
+      }
+    }
+
   };
 
   /**
@@ -87,12 +71,17 @@
   /**
    * it add a TableSlice in the proper list.
    */
-  Table.prototype.addATableSlice = function(){
-    var tableSlice = new snake.TableSlice({
-        hardLevel    : this.hardLevel,
-        width        : this.width,
-        heightBorder : this.height,
-        height       : this.heightForSlice});
+  Table.prototype.addATableSlice = function(emptyElement){
+    var tableSlice = null;
+
+    if (emptyElement) {
+      tableSlice = new snake.TableSlice({
+          nullPosition : false,
+          hardLevel    : this.hardLevel,
+          width        : this.width,
+          heightBorder : this.height,
+          height       : this.heightForSlice});
+    }
 
     this.tableSlicesList.push(tableSlice);
 

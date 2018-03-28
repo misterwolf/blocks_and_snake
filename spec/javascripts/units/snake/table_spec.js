@@ -1,4 +1,4 @@
-/* global describe, it, expect, spyOn */
+/* global describe, it, expect, spyOn, beforeEach */
 
 (function(snake) {
 
@@ -22,7 +22,7 @@
     describe('#initialization', function(){
 
       it('should have a height', function(){
-        var height = 10;
+        var height = 500;
         var table = new Table({height: height});
         expect(table.height).toBe(height);
       });
@@ -34,7 +34,7 @@
       });
 
       it('should have a heightForSlice', function(){
-        var heightForSlice = 10;
+        var heightForSlice = 500;
         var table = new Table({heightForSlice: heightForSlice});
         expect(table.heightForSlice).toBe(heightForSlice);
       });
@@ -44,14 +44,18 @@
         expect(table.hardLevel).toBeDefined();
       });
 
-    });
-    describe('#initObservers', function(){
-
-      it('should observe the table-slice-end event', function(){
+      it('should fill the tableSliceList having size in relation with heights', function(){
         var table = new Table();
-        spyOn(table, 'on');
-        table.initObservers();
-        expect(table.on).toHaveBeenCalledWith('table-slice-end', table.restoreTableSlicesList);
+        expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice);
+      });
+
+      it('should fill the tableSliceList with fake elements', function(){
+        var table = new Table();
+        var sliceNumber = table.tableSlicesList.length;
+        while (sliceNumber) {
+          expect( table.tableSlicesList[sliceNumber - 1]).toBe(null);
+          sliceNumber--;
+        }
       });
 
     });
@@ -66,19 +70,18 @@
     });
 
     describe('#addATableSlice', function(){
-      it('should create a TableSlice', function(){
+      it('should add a TableSlice', function(){
         var table = new Table();
+        var currentLenght = table.tableSlicesList.length;
         table.addATableSlice();
-        expect(table.tableSlicesList.length).toBe(1);
+        expect(table.tableSlicesList.length).toBe(currentLenght + 1);
       });
-    });
 
-    describe('#fillTableSlicesList', function(){
-
-      it('should fill the tableSliceList calculated with heights', function(){
+      it('should add a null element if parameter == true', function(){
         var table = new Table();
-        table.fillTableSlicesList();
-        expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice);
+        var currentLenght = table.tableSlicesList.length;
+        table.addATableSlice(false);
+        expect(table.tableSlicesList[currentLenght]).toBe(null);
       });
 
     });
@@ -88,9 +91,13 @@
       it('should remove the first element in TableSlice', function(){
         var anotherSlice = new snake.TableSlice();
         var anotherSlice2 = new snake.TableSlice();
+
         var table   = new Table({tableSlicesList: [ anotherSlice, anotherSlice2 ]});
+        var currentLenght = table.tableSlicesList.length;
+
         table.removeFirstTableSlice();
-        expect(table.tableSlicesList.length).toBe(1);
+
+        expect(table.tableSlicesList.length).toBe( currentLenght - 1 );
         expect(table.tableSlicesList[0]).toBe(anotherSlice2);
       });
 
