@@ -92,4 +92,4 @@
     return object;
   };
 
-}(window.snake.lib.Emitter = {}));
+}(window._blocks_and_snake.lib.Emitter = {}));

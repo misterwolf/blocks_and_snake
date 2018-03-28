@@ -1,12 +1,12 @@
 /* global jasmine, describe, it, spyOn, expect, beforeEach, afterEach */
 
-(function(snake) {
+(function(blocks_and_snake) {
 
   'use strict';
 
-  var Sprinter   = snake.Sprinter;
+  var Sprinter   = blocks_and_snake.Sprinter;
 
-  snake.Table = function(){
+  blocks_and_snake.Table = function(){
 
   };
 
@@ -21,7 +21,7 @@
       });
 
       it('should contain Table object', function(){
-        expect(sprinter.table).toEqual(snake.Table);
+        expect(sprinter.table).toEqual(blocks_and_snake.Table);
       });
 
       it('should have a speed', function(){
@@ -112,4 +112,4 @@
 
   });
 
-})(window.snake);
+})(window._blocks_and_snake);

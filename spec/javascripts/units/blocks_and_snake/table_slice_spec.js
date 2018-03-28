@@ -1,12 +1,12 @@
 /* global describe, beforeEach, it, expect, spyOn */
 
-(function(snake) {
+(function(blocks_and_snake) {
 
   'use strict';
 
-  var TableSlice = snake.TableSlice;
+  var TableSlice = blocks_and_snake.TableSlice;
 
-  snake.Block = function(opts){
+  blocks_and_snake.Block = function(opts){
 
     this.positionY = opts.positionY || 0;
     this.positionX = opts.positionX || 0;
@@ -131,4 +131,4 @@
     });
 
   });
-})(window.snake);
+})(window._blocks_and_snake);

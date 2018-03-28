@@ -6,7 +6,7 @@
 //= require ./lib/utility
 //= require ./lib/emitter
 
-(function(snake, lib){
+(function(blocks_and_snake, lib){
   'use strict';
 
   // a block doesn't render it self.
@@ -84,6 +84,6 @@
 
   }
 
-  snake.Block = Block;
+  blocks_and_snake.Block = Block;
 
-})(window.snake, window.snake.lib);
+})(window._blocks_and_snake, window._blocks_and_snake.lib);

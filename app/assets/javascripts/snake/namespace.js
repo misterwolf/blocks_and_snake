@@ -1,1 +1,0 @@
-window.snake = window.snake || {};

@@ -4,7 +4,7 @@
 //= require ./lib/namespace
 //= require ./lib/utility
 
-(function(snake, lib){
+(function(blocks_and_snake, lib){
 
   'use strict';
 
@@ -32,7 +32,7 @@
   var Sprinter = function(opts){
 
     opts       = opts || {};
-    this.table = snake.Table;
+    this.table = blocks_and_snake.Table;
 
     this.speed            = opts.speed || 0;
     this.intervalTime     = SPEED_TO_TIME_LAPSE[this.speed];
@@ -69,6 +69,6 @@
     this.start();
   };
 
-  snake.Sprinter = Sprinter;
+  blocks_and_snake.Sprinter = Sprinter;
 
-})(window.snake, window.snake.lib);
+})(window._blocks_and_snake, window._blocks_and_snake.lib);

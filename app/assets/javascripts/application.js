@@ -15,10 +15,10 @@
 //= require turbolinks
 //= require_tree .
 
-//= require ./snake/namespace
+//= require ./blocks_and_snake/namespace
 
-//= require snake/lib/namespace
-//= require snake/lib/utility
+//= require blocks_and_snake/lib/namespace
+//= require blocks_and_snake/lib/utility
 
-//= require snake/table-slice
-//= require snake/block
+//= require blocks_and_snake/table-slice
+//= require blocks_and_snake/block

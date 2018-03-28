@@ -21,4 +21,4 @@
 
   };
 
-})(window.snake.lib.utility = {});
+})(window._blocks_and_snake.lib.utility = {});
