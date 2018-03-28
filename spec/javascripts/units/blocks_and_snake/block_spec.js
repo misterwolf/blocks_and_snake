@@ -123,4 +123,4 @@
     });
   });
 
-})(window.snake.Block);
+})(window._blocks_and_snake.Block);

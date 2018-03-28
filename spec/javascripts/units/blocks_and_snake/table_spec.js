@@ -1,11 +1,11 @@
 /* global describe, it, expect, spyOn, beforeEach */
 
-(function(snake) {
+(function(blocks_and_snake) {
 
   'use strict';
 
-  var Table   = snake.Table;
-  snake.TableSlice = function(opts){
+  var Table   = blocks_and_snake.Table;
+  blocks_and_snake.TableSlice = function(opts){
 
     opts = opts || {};
     this.empty     = opts.empty     || false;
@@ -89,8 +89,8 @@
     describe('#removeFirstTableSlice', function(){
 
       it('should remove the first element in TableSlice', function(){
-        var anotherSlice = new snake.TableSlice();
-        var anotherSlice2 = new snake.TableSlice();
+        var anotherSlice = new blocks_and_snake.TableSlice();
+        var anotherSlice2 = new blocks_and_snake.TableSlice();
 
         var table   = new Table({tableSlicesList: [ anotherSlice, anotherSlice2 ]});
         var currentLenght = table.tableSlicesList.length;
@@ -105,4 +105,4 @@
 
   });
 
-})(window.snake);
+})(window._blocks_and_snake);
