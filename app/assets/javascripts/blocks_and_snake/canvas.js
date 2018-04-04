@@ -21,16 +21,20 @@
   var LINE_WIDTH   = 2;
   var FONT         = 'sans-serif';
   var FONT_SIZE    = '20pt';
+  var WIDTH             = 600;
+  var HEIGHT            = 1000;
 
-  var Render = function(opts){
+  var Canvas = function(opts){
     opts = opts || {};
-    this.canvas       = opts.canvas      || document.getElementsByTagName('canvas')[0];
-    this.context      = this.canvas.getContext('2d');
-    this.lineWidth    = opts.lineWidth   || LINE_WIDTH;
-    this.strokeStyle  = opts.strokeStyle || STROKE_STYLE;
+    this.canvas        = opts.canvas      || document.getElementsByTagName('canvas')[0];
+    this.canvas.width  = opts.width       || WIDTH;
+    this.canvas.height = opts.height      || HEIGHT;
+    this.context       = this.canvas.getContext('2d');
+    this.lineWidth     = opts.lineWidth   || LINE_WIDTH;
+    this.strokeStyle   = opts.strokeStyle || STROKE_STYLE;
   };
 
-  Render.prototype.renderShape = function(props){
+  Canvas.prototype.renderShape = function(props){
     props = props || {};
     var context = this.context;
 
@@ -49,6 +53,6 @@
 
   };
 
-  blocks_and_snake.Render = Render;
+  blocks_and_snake.Canvas = Canvas;
 
 })(window._blocks_and_snake);
