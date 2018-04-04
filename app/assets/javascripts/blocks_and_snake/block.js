@@ -1,6 +1,3 @@
-// read this:
-// https://www.sitepoint.com/basic-animation-with-canvas-and-javascript/
-
 //= require ./namespace
 //= require ./lib/namespace
 //= require ./lib/utility
@@ -17,6 +14,9 @@
   var iterateObject = lib.utility.iterateObject,
       Emitter       = lib.Emitter;
 
+  var WIDTH         = 40;
+  var HEIGHT        = 40;
+
   var BG_COLORS = {
     1 : 'ffffff',
     11: '00FFFF',
@@ -29,11 +29,15 @@
   var Block = function(opts){
 
     opts            = opts            || {};
-    this.hardLevel  = opts.hardLevel  || 1;
+
     this.value      = opts.value      || 1;
-    this.positionY  = opts.positionY  || 0; // Y Axis.
-    this.positionX  = opts.positionX  || 0; // X Axis.
-    this.dimension  = opts.dimension  || [0,0]; // dimension in x,y
+
+    this.positionY  = opts.positionY  || 0;
+    this.positionX  = opts.positionX  || 0;
+
+    this.width      = opts.width      || WIDTH;
+    this.height     = opts.heigth     || HEIGHT;
+
     this.bgColor    = setBgColor(this.value);
     this.valueColor = '#000000';
 

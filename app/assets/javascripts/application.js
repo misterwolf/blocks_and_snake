@@ -19,6 +19,11 @@
 
 //= require blocks_and_snake/lib/namespace
 //= require blocks_and_snake/lib/utility
+//= require blocks_and_snake/lib/dom
+//= require blocks_and_snake/lib/emitter
 
-//= require blocks_and_snake/table-slice
 //= require blocks_and_snake/block
+//= require blocks_and_snake/table-slice
+//= require blocks_and_snake/snake
+//= require blocks_and_snake/sprinter
+//= require blocks_and_snake/table
