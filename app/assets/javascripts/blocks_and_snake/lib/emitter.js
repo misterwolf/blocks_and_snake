@@ -35,7 +35,7 @@
    * @param {Object}    object={}       An object to turn into `Emitter`
    * @returns {Object}                  Same object turned into emitter.
    * @function
-   * @memberof snake.lib.Emitter
+   * @memberof blocks_and_snake.lib.Emitter
    */
 
   Emitter.make = function(object) {
