@@ -1,9 +1,12 @@
 #canvas-container {
-  display: inline-block;
-  text-align: center;
-  width: 100%;
+
 }
 
 canvas {
-  display: inline-block;
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  background-color: #000;
 }

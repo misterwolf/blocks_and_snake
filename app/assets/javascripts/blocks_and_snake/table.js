@@ -13,6 +13,7 @@
   var HEIGHT_FOR_SLICE  = 100;
 
   var Emitter           = lib.Emitter;
+  var iterateObject     = lib.utility.iterateObject;
 
   /**
    * The 'screen' containing all the visible elements
@@ -31,31 +32,54 @@
     opts                  = opts                 || {};
 
     this.height           = opts.height          || HEIGHT;
+    this.canvas           = opts.canvas          || {};
     this.heightForSlice   = opts.heightForSlice  || HEIGHT_FOR_SLICE;
     this.width            = opts.width           || WIDTH;
     this.hardLevel        = opts.hardLevel       || 1;
     this.tableSlicesList  = opts.tableSlicesList || [];
 
     Emitter.make(this);
+    var _this = this;
 
     // fill tableSlicesList
     this.fillTableSlicesList();
-
+    // var _this = this;
     // Observers
-    this.on('table-slice-end', this.restoreTableSlicesList);
-    this.on('go-on',           this.moveSlices);
+    this.on('table-slice-end',
+      function(){
+        _this.restoreTableSlicesList();
+      });
+
+    this.on('go-on',
+      function(by){
+        by = by || 2;
+        _this.moveSlices(by);
+      }
+    );
   };
 
   /**
    * it fill the list with empty TableSlice having Height/HeightForSlice element
    */
   Table.prototype.fillTableSlicesList = function(){
-    var totElement = this.height / this.heightForSlice;
+    var totElement = this.height / this.heightForSlice + 1;
+    var i = 0;
+    while ( i < totElement ) {
+      if (typeof this.tableSlicesList[i] === 'undefined') {
 
-    while (totElement-- ) {
-      if (typeof this.tableSlicesList[totElement] === 'undefined') {
-        this.tableSlicesList[totElement] = null;
+        var tableSlice = new TableSlice({
+            empty        : true,
+            table        : this,
+            canvas       : this.canvas,
+            width        : this.width,
+            heigh        : this.heightForSlice,
+            heightBorder : this.height,
+            positionY    : (totElement - i - 2) * this.heightForSlice // start with a negative position.
+          });
+        this.tableSlicesList[i] = tableSlice;
+
       }
+      i++;
     }
 
   };
@@ -64,24 +88,25 @@
    * it restore the tableSlicesList
    */
   Table.prototype.restoreTableSlicesList = function(){
-    this.addATableSlice();
     this.removeFirstTableSlice();
+    this.addATableSlice();
   };
 
   /**
    * it add a TableSlice in the proper list.
    */
   Table.prototype.addATableSlice = function(emptyElement){
-    var tableSlice = null;
-
-    if (emptyElement) {
-      tableSlice = new blocks_and_snake.TableSlice({
-          nullPosition : false,
-          hardLevel    : this.hardLevel,
-          width        : this.width,
-          heightBorder : this.height,
-          height       : this.heightForSlice});
-    }
+    var tableSlice = new TableSlice({
+        empty        : emptyElement,
+        positionY    : -this.heightForSlice,
+        nullPosition : false,
+        hardLevel    : this.hardLevel,
+        width        : this.width,
+        canvas       : this.canvas,
+        heightBorder : this.height,
+        table        : this,
+        height       : this.heightForSlice
+      });
 
     this.tableSlicesList.push(tableSlice);
 
@@ -105,8 +130,13 @@
   /**
    * it run event moveslice for all the existing table-slices.
    */
-  Table.prototype.moveSlices = function(cb){
-    this.emit('move-slice', cb || function(){});
+  Table.prototype.moveSlices = function(by){
+    by = by || 1;
+    var slices = this.tableSlicesList;
+
+    iterateObject(slices, function(key){
+      slices[key].incrementPositionY(by); // reset each Block.positionY;
+    });
   };
 
   blocks_and_snake.Table = Table;

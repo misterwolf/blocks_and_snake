@@ -1,5 +1,8 @@
 /* global describe, it, expect, beforeEach */
 
+window._blocks_and_snake.Canvas = {};
+window._blocks_and_snake.Canvas.renderShape = function(){};
+
 (function(Block) {
 
   'use strict';
@@ -18,10 +21,6 @@
         expect(block.positionY).toBeDefined();
       });
 
-      it('should have a hardLevel', function() {
-        expect(block.hardLevel).toBeDefined();
-      });
-
       it('should have a positionX', function() {
         expect(block.positionY).toBeDefined();
       });
@@ -34,17 +33,24 @@
         expect(block.valueColor).toBeDefined();
       });
 
-      it('should have a dimension', function() {
-        expect(block.dimension).toBeDefined();
+      it('should have a width', function() {
+        expect(block.width).toBeDefined();
       });
 
+      it('should have a height', function() {
+        expect(block.height).toBeDefined();
+      });
+
+      it('should have a canvas', function() {
+        expect(block.canvas).toBeDefined();
+      });
     });
 
     describe('#bgColor', function() {
 
       it('should be blank if value 1 <=> 10', function() {
         var block = new Block();
-        expect(block.bgColor).toBe('#ffffff');
+        expect(block.bgColor).toBe('#0e0e0e');
       });
 
       it('should be light blue if value > 10 and < 20 ', function() {
@@ -72,7 +78,7 @@
     describe('#change', function() {
       var block = null;
       beforeEach(function(){
-        block = new Block();
+        block = new Block( { canvas: window._blocks_and_snake.Canvas } );
       });
 
       it('should change the value', function() {
@@ -107,7 +113,7 @@
       it('should increment by num passed with param', function() {
         var y = 10;
         var newY = 11;
-        var block = new Block({ positionY: y});
+        var block = new Block({ positionY: y, canvas: window._blocks_and_snake.Canvas});
         block.setPositionY(newY);
         expect(block.positionY).toEqual(newY);
       });
@@ -116,7 +122,7 @@
     describe('#incrementYPosition', function() {
       it('should increment by one the y position', function() {
         var y = 10;
-        var block = new Block({ positionY: y});
+        var block = new Block({ positionY: y, canvas: window._blocks_and_snake.Canvas});
         block.incrementYPosition();
         expect(block.positionY).toEqual(y + 1);
       });

@@ -42,6 +42,8 @@
     object = object || {};
     var listenersMap = {};
 
+    object._emitterListener = Emitter.emitterListener = listenersMap;
+
     var getListeners = function(evt) {
       listenersMap[evt] = listenersMap[evt] || [];
       return listenersMap[evt];
