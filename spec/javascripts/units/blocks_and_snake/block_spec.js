@@ -1,7 +1,7 @@
 /* global describe, it, expect, beforeEach */
 
 window._blocks_and_snake.Canvas = {};
-window._blocks_and_snake.Canvas.renderShape = function(){};
+window._blocks_and_snake.Canvas.renderBlock = function(){};
 
 (function(Block) {
 

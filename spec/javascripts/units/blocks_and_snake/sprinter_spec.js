@@ -57,10 +57,10 @@
         spyOn(sprinter.table, 'emit');
         sprinter.start();
         setTimeout( function(){
-              expect(sprinter.table.emit).toHaveBeenCalledWith('go-on', sprinter.speed);
-              expect(typeof sprinter.intervalObserver).toBe('number');
-              done();
-            }, 1);
+          expect(sprinter.table.emit).toHaveBeenCalledWith('go-on', sprinter.speed);
+          expect(typeof sprinter.intervalObserver).toBe('number');
+          done();
+        }, 10);
 
       });
 

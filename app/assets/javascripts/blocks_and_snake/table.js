@@ -4,7 +4,7 @@
 //= require ./lib/namespace
 //= require ./lib/utility
 
-(function(blocks_and_snake, TableSlice, lib){
+(function(blocks_and_snake, lib){
 
   'use strict';
 
@@ -12,8 +12,10 @@
   var HEIGHT            = 1000;
   var HEIGHT_FOR_SLICE  = 100;
 
-  var Emitter           = lib.Emitter;
-  var iterateObject     = lib.utility.iterateObject;
+  var Emitter           = lib.Emitter,
+      iterateObject     = lib.utility.iterateObject,
+      Snake             = blocks_and_snake.Snake,
+      TableSlice        = blocks_and_snake.TableSlice;
 
   /**
    * The 'screen' containing all the visible elements
@@ -31,8 +33,10 @@
 
     opts                  = opts                 || {};
 
-    this.height           = opts.height          || HEIGHT;
     this.canvas           = opts.canvas          || {};
+    this.snake            = opts.snake           || new Snake({canvas: this.canvas});
+
+    this.height           = opts.height          || HEIGHT;
     this.heightForSlice   = opts.heightForSlice  || HEIGHT_FOR_SLICE;
     this.width            = opts.width           || WIDTH;
     this.hardLevel        = opts.hardLevel       || 1;
@@ -48,13 +52,17 @@
     this.on('table-slice-end',
       function(){
         _this.restoreTableSlicesList();
-      });
+      }
+    );
 
     this.on('go-on',
+
       function(by){
         by = by || 2;
         _this.moveSlices(by);
+        _this.snake.render();
       }
+
     );
   };
 
@@ -141,4 +149,4 @@
 
   blocks_and_snake.Table = Table;
 
-})(window._blocks_and_snake, window._blocks_and_snake.TableSlice, window._blocks_and_snake.lib);
+})(window._blocks_and_snake, window._blocks_and_snake.lib);

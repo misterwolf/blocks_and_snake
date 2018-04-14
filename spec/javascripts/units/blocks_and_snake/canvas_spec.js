@@ -10,6 +10,8 @@
     this.positionY  = 100;
     this.positionX  = 100;
 
+    this.radius     = 5;
+
     this.width      = 20;
     this.height     = 20;
 
@@ -17,9 +19,28 @@
     this.valueColor = '#000000';
   };
 
+  blocks_and_snake.Snake = function(){
+    this.value      = 1;
+
+    this.positionY  = 100;
+    this.positionX  = 100;
+
+    this.radius     = 5;
+
+    this.outline    = 2 * Math.PI;
+
+    this.width      = 20;
+    this.height     = 20;
+
+    this.bgColor    = '#fff';
+    this.valueColor = '#000000';
+  };
+
+  var SnakeMocked = blocks_and_snake.Snake;
   var BlockMocked = blocks_and_snake.Block;
   var canvas      = blocks_and_snake.Canvas;
   var block       = new BlockMocked();
+  var snake       = new SnakeMocked();
 
   describe('#Canvas', function() {
 
@@ -39,12 +60,45 @@
 
     });
 
-    describe('#renderShape', function() {
+    describe('#renderSnakeValue', function() {
+      it('should define the main shape', function(){
+
+        spyOn(canvas.context,'fillText');
+        canvas.renderSnakeValue(snake);
+
+        expect(canvas.context.fillText).toHaveBeenCalledWith(
+          snake.value,
+          snake.positionX,
+          snake.positionY
+        );
+
+      });
+    });
+
+    describe('#renderSnake', function() {
+      it('should define the main shape', function(){
+
+        spyOn(canvas.context,'arc');
+        canvas.renderSnake(snake);
+
+        expect(canvas.context.arc).toHaveBeenCalledWith(
+          snake.positionX,
+          snake.positionY,
+          snake.radius,
+          0,
+          snake.outline,
+          true
+        );
+
+      });
+    });
+
+    describe('#renderBlock', function() {
 
       it('should define the main shape', function(){
 
         spyOn(canvas.context,'rect');
-        canvas.renderShape(block);
+        canvas.renderBlock(block);
 
         expect(canvas.context.rect).toHaveBeenCalledWith(
           block.positionX,
@@ -59,7 +113,7 @@
 
         spyOn(canvas.context,'fill');
 
-        canvas.renderShape(block);
+        canvas.renderBlock(block);
         expect(canvas.context.fill).toHaveBeenCalled();
       });
 
@@ -67,7 +121,7 @@
 
         spyOn(canvas.context,'stroke');
 
-        canvas.renderShape(block);
+        canvas.renderBlock(block);
         expect(canvas.context.stroke).toHaveBeenCalled();
       });
 
@@ -75,7 +129,7 @@
 
         spyOn(canvas.context,'fillText');
 
-        canvas.renderShape(block);
+        canvas.renderBlock(block);
         // centering text
         expect(canvas.context.fillText).toHaveBeenCalledWith(
           block.value,

@@ -1,4 +1,4 @@
-/* global describe, it, expect, beforeEach, spyOn */
+/* global describe, it, expect, beforeEach, spyOn, jasmine */
 
 (function(blocks_and_snake) {
 
@@ -19,6 +19,26 @@
         expect(snake.value).toBeDefined();
       });
 
+      it('should have a radius', function(){
+        expect(snake.radius).toBeDefined();
+      });
+
+      it('should have a outline', function(){
+        expect(snake.outline).toBeDefined();
+      });
+
+      it('should have a canvas', function(){
+        expect(snake.canvas).toBeDefined();
+      });
+
+      it('should have a horizontal margin for value representation', function(){
+        expect(snake.marginXValue).toBeDefined();
+      });
+
+      it('should have a vertical margin for value representation', function(){
+        expect(snake.marginYValue).toBeDefined();
+      });
+
       it('should have a position on horizontal line', function(){
         expect(snake.positionX).toBeDefined();
       });
@@ -31,6 +51,10 @@
         expect(snake.bgColor).toBeDefined();
       });
 
+      it('should have a textColor', function(){
+        expect(snake.textColor).toBeDefined();
+      });
+
       it('should have a lower limit x', function(){
         expect(snake.lowerXLimit).toBeDefined();
       });
@@ -40,13 +64,65 @@
 
     });
 
+    describe('#render', function(){
+      var snake = null;
+      var snakeValue = 5;
+      var renderSnakeValue = null;
+      var renderSnake     = null;
+
+      beforeEach(function(){
+
+        renderSnakeValue = jasmine.createSpy('renderSnakeValue');
+        renderSnake      = jasmine.createSpy('renderSnake');
+
+        jasmine.createSpy('dummy');
+        snake = new Snake({value: snakeValue, canvas: {renderSnake: renderSnake, renderSnakeValue: renderSnakeValue}});
+
+      });
+
+      it('it should call renderSnake as much as it is value with incremented y pos', function(){
+        snake.render();
+        expect(renderSnake.calls.count()).toBe(snakeValue);
+      });
+
+      it('it should call renderSnake with proper opts', function(){
+        snake.render();
+        expect(renderSnake).toHaveBeenCalledWith({
+          positionX : snake.positionX,
+          positionY : snake.positionY,
+          radius    : snake.radius,
+          bgColor   : snake.bgColor,
+          outline   : snake.outline
+        });
+      });
+
+      it('it should call renderSnakeValue', function(){
+        snake.render();
+        expect(renderSnakeValue).toHaveBeenCalledWith({
+          value     : snake.value,
+          color     : snake.textColor,
+          positionX : snake.positionX + snake.marginXValue,
+          positionY : snake.positionY + snake.marginYValue
+        }
+        );
+      });
+
+    });
+
     describe('#incrementValue', function(){
 
-      it('should incrementValue by one', function(){
+      it('should incrementValue by one when parameter is null', function(){
         var snake = new Snake();
         var oldValue = snake.value;
         snake.incrementValue();
         expect(snake.value).toBe(oldValue + 1);
+      });
+      it('should incrementValue by one when p', function(){
+        var snake = new Snake();
+        var value = 5;
+        var oldValue = snake.value;
+        snake.incrementValue(value);
+        expect(snake.value).toBe(oldValue + value);
       });
 
     });

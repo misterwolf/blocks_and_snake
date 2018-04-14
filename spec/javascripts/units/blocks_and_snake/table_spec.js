@@ -50,6 +50,11 @@
         expect(table.hardLevel).toBeDefined();
       });
 
+      it('should have a snake', function(){
+        var table = new Table();
+        expect(table.snake).toBeDefined();
+      });
+
       it('should fill the tableSliceList', function(){
         var table = new Table();
         var sliceNumber = table.tableSlicesList.length;

@@ -8,7 +8,10 @@
 
   'use strict';
 
-  var POSITION_Y = 800;
+  var POSITION_Y = 400;
+  var POSITION_X = 200;
+  var MARGIN_POSITION_X_FOR_VALUE = 20;
+  var MARGIN_POSITION_Y_FOR_VALUE = 2.5;
 
   var Emitter       = lib.Emitter;
 
@@ -27,13 +30,22 @@
   var Snake = function(opts){
 
     opts                 = opts               || {};
+    this.canvas          = opts.canvas        || {};
 
-    this.value           = opts.value         || 0;
-    this.positionX       = opts.positionX     || 0;
+    this.value           = opts.value         || 5;
+    this.radius          = opts.radius        || 10;
+    this.outline         = opts.outline       || 2 * Math.PI;
+    this.positionX       = opts.positionX     || POSITION_X;
     this.positionY       = opts.positionY     || POSITION_Y;
+
     this.bgColor         = opts.bgColor       || '#ffffff';
+    this.textColor       = opts.textColor     || '#ffffff';
+
     this.lowerXLimit     = opts.lowerXLimit   || 0;
     this.greaterXLimit   = opts.greaterXLimit || 600;
+
+    this.marginXValue    = this.marginXValue  || MARGIN_POSITION_X_FOR_VALUE;
+    this.marginYValue    = this.marginYValue  || MARGIN_POSITION_Y_FOR_VALUE;
 
     Emitter.make(this);
   };
@@ -45,8 +57,8 @@
     }
   };
 
-  Snake.prototype.incrementValue = function(){
-    this.value++;
+  Snake.prototype.incrementValue = function(value){
+    this.value = (value || 1) + this.value;
   };
 
   Snake.prototype.moveToTheLeft = function(){
@@ -61,6 +73,30 @@
     if (this.positionX > this.greaterXLimit){
       this.positionX = this.greaterXLimit;
     }
+  };
+
+  Snake.prototype.render = function(){
+    var rendering = 0;
+
+    while ( rendering < this.value){
+
+      this.canvas.renderSnake({
+        positionX : this.positionX,
+        positionY : this.positionY + (rendering * this.radius),
+        radius    : this.radius,
+        bgColor   : this.bgColor,
+        outline   : this.outline
+      });
+      rendering++;
+
+    }
+
+    this.canvas.renderSnakeValue({
+      value     : this.value,
+      color     : this.textColor,
+      positionX : this.positionX + this.marginXValue,
+      positionY : this.positionY + this.marginYValue
+    });
   };
 
   blocks_and_snake.Snake = Snake;

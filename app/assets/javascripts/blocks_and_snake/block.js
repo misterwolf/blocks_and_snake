@@ -59,9 +59,9 @@
       }
     );
 
-    this.bgColor    = setBgColor(this.value);
+    this.bgColor = setBgColor(this.value);
 
-    this.canvas.renderShape(this);
+    this.canvas.renderBlock(this);
 
   };
 
@@ -70,7 +70,7 @@
    */
   Block.prototype.setPositionY = function(y){
     this.positionY = y || 0;
-    this.canvas.renderShape(this);
+    this.canvas.renderBlock(this);
   };
 
   /**
@@ -78,7 +78,7 @@
    */
   Block.prototype.incrementYPosition = function(){
     this.positionY++;
-    this.canvas.renderShape(this);
+    this.canvas.renderBlock(this);
   };
 
   function setBgColor (value){
