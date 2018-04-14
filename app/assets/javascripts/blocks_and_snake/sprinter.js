@@ -1,3 +1,5 @@
+/* global  requestAnimationFrame */
+
 //= require ./namespace
 //= require ./table
 
@@ -8,16 +10,7 @@
 
   'use strict';
 
-  var SPEED_TO_TIME_LAPSE = {
-    0: 250,
-    1: 200,
-    2: 150,
-    3: 100,
-    4: 50,
-    5: 25
-  };
-
-  var Emitter       = lib.Emitter;
+  var Emitter    = lib.Emitter;
 
   /**
   * The runner of the table. Through a interval it send messages to Table
@@ -31,11 +24,10 @@
   */
   var Sprinter = function(opts){
 
-    opts       = opts || {};
-    this.table = blocks_and_snake.Table;
-
-    this.speed            = opts.speed || 0;
-    this.intervalTime     = SPEED_TO_TIME_LAPSE[this.speed];
+    opts                  = opts || {};
+    this.clearRect        = opts.clearRect || function(){};
+    this.table            = opts.table || {};
+    this.speed            = opts.speed || 1;
 
     this.intervalObserver = null;
 
@@ -43,30 +35,37 @@
 
   };
 
-  Sprinter.prototype.afterGoOn = function(){
-
-  };
-
   Sprinter.prototype.increaseSpeed = function(){
     this.speed++;
-    this.intervalTime = SPEED_TO_TIME_LAPSE[this.speed];
+  };
+
+  Sprinter.prototype.decreaseSpeed = function(){
+    this.speed--;
   };
 
   Sprinter.prototype.stop = function(){
-    clearInterval(this.intervalObserver);
+    window.cancelAnimationFrame(this.intervalObserver);
   };
 
   Sprinter.prototype.start = function(){
     var _this = this;
-    _this.intervalObserver = setInterval(function(){
-      _this.emit('go-on', _this.afterGoOn);
-    }, _this.intervalTime);
+
+    _this.clearRect();
+    var loopFunct = function(){
+      _this.table.emit('go-on', _this.speed);
+      _this.clearRect();
+      _this.intervalObserver = requestAnimationFrame(loopFunct);
+    };
+
+    this.intervalObserver = requestAnimationFrame(loopFunct);
   };
 
   Sprinter.prototype.speedUp = function(){
-    this.stop();
     this.increaseSpeed();
-    this.start();
+  };
+
+  Sprinter.prototype.speedDown = function(){
+    this.decreaseSpeed();
   };
 
   blocks_and_snake.Sprinter = Sprinter;

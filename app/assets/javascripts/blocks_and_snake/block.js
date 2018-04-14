@@ -18,7 +18,7 @@
   var HEIGHT        = 40;
 
   var BG_COLORS = {
-    1 : 'ffffff',
+    1 : '0e0e0e',
     11: '00FFFF',
     21: 'FF8C00',
     31: '008B8B',
@@ -36,13 +36,14 @@
     this.positionX  = opts.positionX  || 0;
 
     this.width      = opts.width      || WIDTH;
-    this.height     = opts.heigth     || HEIGHT;
+    this.height     = opts.height     || HEIGHT;
 
     this.bgColor    = setBgColor(this.value);
-    this.valueColor = '#000000';
+    this.valueColor = '#fff';
+
+    this.canvas     = opts.canvas || {};
 
     Emitter.make(this);
-
   };
 
   /**
@@ -58,7 +59,9 @@
       }
     );
 
-    this.bgColor    = setBgColor(this.value);
+    this.bgColor = setBgColor(this.value);
+
+    this.canvas.renderBlock(this);
 
   };
 
@@ -66,8 +69,8 @@
    * It changes the Y position with new passed value
    */
   Block.prototype.setPositionY = function(y){
-    y = y || 0;
-    this.positionY = y;
+    this.positionY = y || 0;
+    this.canvas.renderBlock(this);
   };
 
   /**
@@ -75,6 +78,7 @@
    */
   Block.prototype.incrementYPosition = function(){
     this.positionY++;
+    this.canvas.renderBlock(this);
   };
 
   function setBgColor (value){

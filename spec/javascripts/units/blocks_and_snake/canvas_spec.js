@@ -4,13 +4,13 @@
 
   'use strict';
 
-  var Render = blocks_and_snake.Render;
-
   blocks_and_snake.Block = function(){
     this.value      = 1;
 
-    this.positionY  = 150;
+    this.positionY  = 100;
     this.positionX  = 100;
+
+    this.radius     = 5;
 
     this.width      = 20;
     this.height     = 20;
@@ -18,44 +18,89 @@
     this.bgColor    = '#fff';
     this.valueColor = '#000000';
   };
+
+  blocks_and_snake.Snake = function(){
+    this.value      = 1;
+
+    this.positionY  = 100;
+    this.positionX  = 100;
+
+    this.radius     = 5;
+
+    this.outline    = 2 * Math.PI;
+
+    this.width      = 20;
+    this.height     = 20;
+
+    this.bgColor    = '#fff';
+    this.valueColor = '#000000';
+  };
+
+  var SnakeMocked = blocks_and_snake.Snake;
   var BlockMocked = blocks_and_snake.Block;
+  var canvas      = blocks_and_snake.Canvas;
+  var block       = new BlockMocked();
+  var snake       = new SnakeMocked();
 
   describe('#Canvas', function() {
 
-    beforeEach(function(done){
-      _f.loadFixture('canvas_fixt.html', done);
-    });
+    describe('#init', function() {
 
-    describe('#initialization', function() {
+      beforeEach(function(done){
+        _f.loadFixture('canvas_fixt.html', function(){ canvas.init(); done(); } );
+      });
 
       it('should have a canvas', function(){
-        var render = new Render();
-        expect(typeof render.canvas).toBe('object');
+        expect(typeof canvas.canvas).toBe('object');
       });
 
       it('should have a defined context', function(){
-        var render = new Render();
-        expect(typeof render.context.canvas).toBe('object');
+        expect(typeof canvas.context.canvas).toBe('object');
       });
 
     });
 
-    describe('#renderShape', function() {
+    describe('#renderSnakeValue', function() {
+      it('should define the main shape', function(){
 
-      var render = null;
-      var block  = null;
+        spyOn(canvas.context,'fillText');
+        canvas.renderSnakeValue(snake);
 
-      beforeEach(function(){
-        block  = new BlockMocked();
-        render = new Render();
+        expect(canvas.context.fillText).toHaveBeenCalledWith(
+          snake.value,
+          snake.positionX,
+          snake.positionY
+        );
+
       });
+    });
+
+    describe('#renderSnake', function() {
+      it('should define the main shape', function(){
+
+        spyOn(canvas.context,'arc');
+        canvas.renderSnake(snake);
+
+        expect(canvas.context.arc).toHaveBeenCalledWith(
+          snake.positionX,
+          snake.positionY,
+          snake.radius,
+          0,
+          snake.outline,
+          true
+        );
+
+      });
+    });
+
+    describe('#renderBlock', function() {
 
       it('should define the main shape', function(){
 
-        spyOn(render.context,'rect');
-        render.renderShape(block);
+        spyOn(canvas.context,'rect');
+        canvas.renderBlock(block);
 
-        expect(render.context.rect).toHaveBeenCalledWith(
+        expect(canvas.context.rect).toHaveBeenCalledWith(
           block.positionX,
           block.positionY,
           block.width,
@@ -66,29 +111,30 @@
 
       it('should fill the shape', function(){
 
-        spyOn(render.context,'fill');
+        spyOn(canvas.context,'fill');
 
-        render.renderShape(block);
-        expect(render.context.fill).toHaveBeenCalled();
+        canvas.renderBlock(block);
+        expect(canvas.context.fill).toHaveBeenCalled();
       });
 
       it('should stroke the shape', function(){
 
-        spyOn(render.context,'stroke');
+        spyOn(canvas.context,'stroke');
 
-        render.renderShape(block);
-        expect(render.context.stroke).toHaveBeenCalled();
+        canvas.renderBlock(block);
+        expect(canvas.context.stroke).toHaveBeenCalled();
       });
 
       it('should add a text in the shape', function(){
 
-        spyOn(render.context,'fillText');
+        spyOn(canvas.context,'fillText');
 
-        render.renderShape(block);
-        expect(render.context.fillText).toHaveBeenCalledWith(
+        canvas.renderBlock(block);
+        // centering text
+        expect(canvas.context.fillText).toHaveBeenCalledWith(
           block.value,
-          block.positionX / 2,
-          block.positionY / 2
+          block.width / 2 + block.positionX,
+          ((block.height + canvas.fontSize) / 2) + block.positionY
         );
       });
     });

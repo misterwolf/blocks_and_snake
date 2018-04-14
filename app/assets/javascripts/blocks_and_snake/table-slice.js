@@ -26,37 +26,40 @@
    */
   var TableSlice = function(opts){
 
-    opts              = opts            || {};
+    opts              = opts              || {};
 
-    this.positionY    = opts.positionY  || 0;
-    this.hardLevel    = opts.hardLevel  || 1;
-    this.height       = opts.height     || 100;
-    this.width        = opts.width      || 600;
-    this.blockWidth   = opts.blockWidth || BLOCK_WIDTH; // width of a Single Block
+    this.positionY    = opts.positionY    || 0;
+    this.empty        = opts.empty        || false;
+    this.hardLevel    = opts.hardLevel    || 1;
+    this.height       = opts.height       || 100;
+    this.width        = opts.width        || 600;
+    this.blockWidth   = opts.blockWidth   || BLOCK_WIDTH; // width of a Single Block
     this.heightBorder = opts.heightBorder || HEIGHT_BORDER;
+    this.blocksList   = opts.blocksList   || [];
 
-    this.blocksList   = this.fillBlockList(opts.nullPosition);
+    this.table        = opts.table        || {};
+    this.canvas       = opts.canvas       || {};
+
+    if (!this.empty){
+      this.blocksList = this.fillBlockList(opts.nullPosition);
+    }
 
     Emitter.make(this);
 
-    this.on('move-slice', function(){
-        this.incrementPositionY(this.incrementBlocksYPosition);
-      }
-    );
   };
 
   /**
    * it reduces the positionY by one and
    * emit 'table-slice-end' event if positionY == 0
    */
-  TableSlice.prototype.incrementPositionY = function(cb){
-    this.positionY++;
+  TableSlice.prototype.incrementPositionY = function(by){
+    by = by || 1;
+    this.positionY = this.positionY + by;
 
     if (this.positionY >= this.heightBorder) {
-      this.emit('table-slice-end', this);
+      this.table.emit('table-slice-end', this);
     } else {
-      cb = cb || function(){};
-      cb();
+      this.incrementBlocksYPosition();
     }
 
   };
@@ -67,7 +70,6 @@
   TableSlice.prototype.incrementBlocksYPosition = function(){
     var _this = this;
     var blocksList = this.blocksList;
-
     iterateObject(blocksList, function(key){
       blocksList[key].setPositionY(_this.positionY); // reset each Block.positionY;
     });
@@ -82,7 +84,9 @@
 
       var block = new blocks_and_snake.Block({
         hardLevel : this.hardLevel,
-        dimension : [BLOCK_WIDTH, this.height],
+        width     : BLOCK_WIDTH,
+        canvas    : this.canvas,
+        height    : this.height,
         positionX : (this.blockWidth * maxNum),
         positionY : this.positionY
       });

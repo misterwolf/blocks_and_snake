@@ -1,0 +1,27 @@
+<script>
+  var table = null;
+  var sprinter = null;
+
+  (function(window) {
+
+    'use strict';
+
+    var height = 600;
+    var width  = 400;
+    var base = window._blocks_and_snake,
+        dom  = base.lib.dom;
+
+    dom.ready(function(){
+
+      var canvas = base.Canvas;
+      canvas.init({height: height, width: width});
+
+      table    = new base.Table({height: height, heightForSlice: 100, width: width, canvas: canvas});
+
+      sprinter = new base.Sprinter({table: table, render: canvas.clearRect});
+      sprinter.start();
+    });
+
+  })(window);
+
+</script>

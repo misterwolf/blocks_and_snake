@@ -10,9 +10,15 @@
     opts = opts || {};
     this.empty     = opts.empty     || false;
     this.hardLevel = opts.hardLevel || 0;
+    this.positionY = opts.positionY || 0;
+
+    this.incrementPositionY = function(){
+
+    };
 
     this.moveBlocksDown = function(){
     };
+
     this.stopBlocks = function(){
     };
 
@@ -44,18 +50,72 @@
         expect(table.hardLevel).toBeDefined();
       });
 
-      it('should fill the tableSliceList having size in relation with heights', function(){
+      it('should have a snake', function(){
         var table = new Table();
-        expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice);
+        expect(table.snake).toBeDefined();
       });
 
-      it('should fill the tableSliceList with fake elements', function(){
+      it('should fill the tableSliceList', function(){
         var table = new Table();
         var sliceNumber = table.tableSlicesList.length;
         while (sliceNumber) {
-          expect( table.tableSlicesList[sliceNumber - 1]).toBe(null);
+          expect(typeof table.tableSlicesList[sliceNumber - 1]).toBe('object');
           sliceNumber--;
         }
+      });
+
+    });
+
+    describe('#moveSlices', function(){
+
+      it('should call proper method for each tableSlice', function(){
+
+        var anotherSlice = new blocks_and_snake.TableSlice();
+        var anotherSlice2 = new blocks_and_snake.TableSlice();
+
+        var table   = new Table({tableSlicesList: [ anotherSlice, anotherSlice2 ]});
+        var sliceNumber = table.tableSlicesList.length;
+
+        while (sliceNumber--) {
+          spyOn(table.tableSlicesList[sliceNumber], 'incrementPositionY');
+        }
+
+        table.moveSlices();
+
+        sliceNumber = table.tableSlicesList.length;
+        while (sliceNumber--) {
+          expect( table.tableSlicesList[sliceNumber].incrementPositionY).toHaveBeenCalled();
+        }
+
+      });
+
+    });
+
+    describe('#fillTableSlicesList', function(){
+      var table = null;
+
+      beforeEach(function(){
+        table = new Table();
+      });
+
+      it('should fill the tableSlicesList with defined number of elements', function(){
+        expect(table.tableSlicesList.length).toBe(table.height / table.heightForSlice + 1);
+      });
+
+      it('should sort list with Desc positionY', function(){
+        // better keep static values: we can make a clearer idea about our purpose
+        expect(table.tableSlicesList[0].positionY).toBe(  900 );
+        expect(table.tableSlicesList[1].positionY).toBe(  800 );
+        expect(table.tableSlicesList[2].positionY).toBe(  700 );
+        expect(table.tableSlicesList[3].positionY).toBe(  600 );
+        expect(table.tableSlicesList[4].positionY).toBe(  500 );
+        expect(table.tableSlicesList[5].positionY).toBe(  400 );
+        expect(table.tableSlicesList[6].positionY).toBe(  300 );
+        expect(table.tableSlicesList[7].positionY).toBe(  200 );
+        expect(table.tableSlicesList[8].positionY).toBe(  100 );
+        expect(table.tableSlicesList[9].positionY).toBe(  0   );
+        expect(table.tableSlicesList[10].positionY).toBe( -100 );
+
       });
 
     });
@@ -70,6 +130,7 @@
     });
 
     describe('#addATableSlice', function(){
+
       it('should add a TableSlice', function(){
         var table = new Table();
         var currentLenght = table.tableSlicesList.length;
@@ -80,8 +141,8 @@
       it('should add a null element if parameter == true', function(){
         var table = new Table();
         var currentLenght = table.tableSlicesList.length;
-        table.addATableSlice(false);
-        expect(table.tableSlicesList[currentLenght]).toBe(null);
+        table.addATableSlice(true);
+        expect(table.tableSlicesList[currentLenght].empty).toBe(true);
       });
 
     });

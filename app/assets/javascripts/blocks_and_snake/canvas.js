@@ -5,50 +5,108 @@
 // https://www.sitepoint.com/basic-animation-with-canvas-and-javascript/
 // http://codetheory.in/20-best-canvas-tutorials-and-examples-that-will-make-you-a-canvas-master/
 
-// context.beginPath();
-// context.rect(188, 50, 200, 100);
-// context.fillStyle = 'yellow';
-// context.fill();
-// context.lineWidth = 7;
-// context.strokeStyle = 'black';
-// context.stroke();
-
 (function(blocks_and_snake){
 
   'use strict';
 
-  var STROKE_STYLE = '#000';
+  var WIDTH        = 600;
+  var HEIGHT       = 600;
+  var STROKE_STYLE = 'black';
   var LINE_WIDTH   = 2;
   var FONT         = 'sans-serif';
-  var FONT_SIZE    = '20pt';
+  var FONT_SIZE    = 25;
 
-  var Render = function(opts){
-    opts = opts || {};
-    this.canvas       = opts.canvas      || document.getElementsByTagName('canvas')[0];
-    this.context      = this.canvas.getContext('2d');
-    this.lineWidth    = opts.lineWidth   || LINE_WIDTH;
-    this.strokeStyle  = opts.strokeStyle || STROKE_STYLE;
+  var Canvas = function(){
   };
 
-  Render.prototype.renderShape = function(props){
+  Canvas.prototype.init = function(opts){
+    opts = opts || {};
+    this.canvas        = opts.canvas      || document.getElementById('main-canvas');
+    this.canvas.width  = opts.width       || WIDTH;
+    this.canvas.height = opts.height      || HEIGHT;
+
+    this.lineWidth     = opts.lineWidth   || LINE_WIDTH;
+    this.strokeStyle   = opts.strokeStyle || STROKE_STYLE;
+    this.fontSize      = opts.fontSize    || FONT_SIZE;
+
+    this.context       = this.canvas.getContext('2d');
+
+  };
+
+  Canvas.prototype.clearRect = function(){
+    this.context.clearRect(0, 0, this.width, this.height);
+  };
+
+  Canvas.prototype.renderSnakeValue = function(props){
+    props = props || {};
+
+    var context = this.context;
+
+    context.beginPath();
+    this.styleFont(
+      context,
+      props.value,
+      props.color || '#fff',
+      props.positionX,
+      props.positionY,
+      (FONT_SIZE / 2) + 'pt ' + FONT
+    );
+  };
+
+  Canvas.prototype.renderSnake = function(props){
     props = props || {};
     var context = this.context;
 
-    context.rect(props.positionX, props.positionY, props.width, props.height);
+    context.beginPath();
+    context.arc(props.positionX, props.positionY, props.radius, 0, props.outline, true);
 
-    context.fillStyle = props.bgColor || '#fff';
-    context.fill();
+    styleBg( context,  props.bgColor || '#fff' );
 
-    context.fillStyle = props.valueColor || '#fff';
-    context.font      = FONT_SIZE + ' ' + FONT;
-    context.fillText(props.value, props.positionX / 2, props.positionY / 2);
-
-    context.lineWidth   = this.lineWidth;
-    context.strokeStyle = this.strokeStyle;
-    context.stroke();
+    defineShape(context, props.lineWidth, props.strokeStyle );
 
   };
 
-  blocks_and_snake.Render = Render;
+  Canvas.prototype.renderBlock = function(props){
+    props = props || {};
+    var context = this.context;
+
+    context.beginPath();
+
+    context.rect(props.positionX, props.positionY, props.width, props.height);
+
+    styleBg( context,  props.bgColor || '#fff' );
+
+    this.styleFont(
+      context,
+      props.value,
+      props.valueColor || '#000',
+      props.width / 2.2 + props.positionX,
+      ((props.height + this.fontSize) / 2) + props.positionY,
+      FONT_SIZE + 'pt ' + FONT
+    );
+
+    defineShape(context, props.lineWidth, props.strokeStyle );
+
+  };
+
+  Canvas.prototype.styleFont = function(ctx, value,  color, posX, posY, font){
+    ctx.fillStyle = color;
+    ctx.font      = font;
+    ctx.fillText(value, posX, posY);
+  };
+
+  function styleBg(ctx, color){
+    ctx.fillStyle = color ;
+    ctx.fill();
+  }
+
+  function defineShape(ctx, width, strokeStyle){
+    ctx.lineWidth   = width;
+    ctx.strokeStyle = strokeStyle;
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  blocks_and_snake.Canvas = new Canvas();
 
 })(window._blocks_and_snake);

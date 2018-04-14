@@ -7,7 +7,15 @@
   var Sprinter   = blocks_and_snake.Sprinter;
 
   blocks_and_snake.Table = function(){
+    this.emit = function(evt){
+      return evt;
+    };
+  };
 
+  blocks_and_snake.canvas = function(){
+    this.clearRect = function(){
+
+    };
   };
 
   describe('#Sprinter', function() {
@@ -21,43 +29,38 @@
       });
 
       it('should contain Table object', function(){
-        expect(sprinter.table).toEqual(blocks_and_snake.Table);
+        expect(sprinter.table).toBeDefined();
+      });
+
+      it('should contain intervalObserver', function(){
+        expect(sprinter.intervalObserver).toBeDefined();
       });
 
       it('should have a speed', function(){
         expect(sprinter.speed).toBeDefined();
       });
 
-      it('should have a intervalObserver', function(){
-        expect(sprinter.intervalObserver).toBeDefined();
+      it('should have a clearRect method', function() {
+        expect(sprinter.clearRect).toBeDefined();
       });
-
-      it('should have a intervalTime', function(){
-        expect(sprinter.intervalTime).toBeDefined();
-      });
-
     });
 
     describe('#start', function(){
       var sprinter      = null;
 
       beforeEach(function() {
-        jasmine.clock().install();
-        sprinter = new Sprinter();
-      });
-      afterEach(function() {
-        jasmine.clock().uninstall();
+        sprinter = new Sprinter( {table: new blocks_and_snake.Table() });
       });
 
-      it('should spread the go-on event evert sprinter.intervalTime', function(){
+      it('should spread the go-on event evert sprinter.intervalTime', function(done){
 
-        spyOn(sprinter, 'emit');
-        expect(sprinter.emit).not.toHaveBeenCalled();
-
+        spyOn(sprinter.table, 'emit');
         sprinter.start();
-
-        jasmine.clock().tick(sprinter.intervalTime + 5);
-        expect(sprinter.emit).toHaveBeenCalledWith('go-on', sprinter.afterGoOn);
+        setTimeout( function(){
+          expect(sprinter.table.emit).toHaveBeenCalledWith('go-on', sprinter.speed);
+          expect(typeof sprinter.intervalObserver).toBe('number');
+          done();
+        }, 10);
 
       });
 
@@ -65,28 +68,42 @@
     describe('#stop', function(){
 
       it('should clearInterval', function(){
-        spyOn(window, 'clearInterval');
+        spyOn(window, 'cancelAnimationFrame');
         var sprinter = new Sprinter();
         sprinter.stop();
-        expect(window.clearInterval).toHaveBeenCalledWith(sprinter.intervalObserver);
+        expect(window.cancelAnimationFrame).toHaveBeenCalledWith(sprinter.intervalObserver);
+      });
+
+    });
+
+    describe('#decreaseSpeed', function(){
+
+      it('should decrease speed by 1', function(){
+        var sprinter = new Sprinter();
+        var oldSpeed = sprinter.speed;
+        sprinter.decreaseSpeed();
+        expect(sprinter.speed).toBe(oldSpeed - 1);
+      });
+
+    });
+
+    describe('#speedDown', function(){
+      var speed = 1;
+      var sprinter     = null;
+
+      beforeEach(function() {
+        sprinter = new Sprinter({speed: speed});
       });
 
     });
 
     describe('#increaseSpeed', function(){
 
-      it('should increase speed', function(){
+      it('should increase speed by 1', function(){
         var sprinter = new Sprinter();
         var oldSpeed = sprinter.speed;
         sprinter.increaseSpeed();
         expect(sprinter.speed).toBe(oldSpeed + 1);
-      });
-
-      it('should set a new intervalTime', function(){
-        var sprinter = new Sprinter();
-        var oldintervalTime = sprinter.intervalTime;
-        sprinter.increaseSpeed();
-        expect(sprinter.intervalTime).toBeLessThan(oldintervalTime);
       });
 
     });
@@ -101,11 +118,9 @@
 
       it('should stop and start interval again', function(){
         var sprinter = new Sprinter();
-        spyOn(sprinter, 'stop');
-        spyOn(sprinter, 'start');
+        spyOn(sprinter, 'increaseSpeed');
         sprinter.speedUp();
-        expect(sprinter.stop).toHaveBeenCalled();
-        expect(sprinter.start).toHaveBeenCalled();
+        expect(sprinter.increaseSpeed).toHaveBeenCalled();
       });
 
     });

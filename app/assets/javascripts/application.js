@@ -13,7 +13,6 @@
 //= require rails-ujs
 //= require jquery
 //= require turbolinks
-//= require_tree .
 
 //= require ./blocks_and_snake/namespace
 
@@ -22,6 +21,7 @@
 //= require blocks_and_snake/lib/dom
 //= require blocks_and_snake/lib/emitter
 
+//= require blocks_and_snake/canvas
 //= require blocks_and_snake/block
 //= require blocks_and_snake/table-slice
 //= require blocks_and_snake/snake
